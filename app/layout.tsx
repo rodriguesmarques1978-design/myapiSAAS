@@ -16,9 +16,9 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "myapi — API infrastructure for indie developers",
+  title: "myapi — Ship your API without building the boring parts",
   description:
-    "Rate limits, API keys, and metered billing in 5 minutes. Zero setup, focus on shipping.",
+    "API keys, rate limiting, usage analytics, and metered billing in one drop-in gateway. Point it at your API and you're protected in 5 minutes.",
 };
 
 export default function RootLayout({

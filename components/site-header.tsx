@@ -5,8 +5,9 @@ import { WaitlistButton } from "@/components/waitlist";
 
 const nav = [
   { label: "Features", href: "#features" },
+  { label: "How it works", href: "#how-it-works" },
   { label: "Pricing", href: "#pricing" },
-  { label: "Docs", href: "#docs" },
+  { label: "FAQ", href: "#faq" },
 ];
 
 export function SiteHeader() {
@@ -31,7 +32,7 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-1.5">
           <ThemeToggle />
-          <WaitlistButton size="sm">Join Waitlist</WaitlistButton>
+          <WaitlistButton size="sm">Get early access</WaitlistButton>
         </div>
       </div>
     </header>
