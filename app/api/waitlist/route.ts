@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 
+import { createAdminClient } from "@/lib/supabase";
 import { waitlistSchema } from "@/lib/validations";
 
-const LOOPS_ENDPOINT = "https://app.loops.so/api/v1/contacts/create";
+// Codigo do Postgres para violacao de unique constraint.
+const UNIQUE_VIOLATION = "23505";
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -20,62 +22,33 @@ export async function POST(request: Request) {
     );
   }
 
-  const apiKey = process.env.LOOPS_API_KEY;
-  if (!apiKey) {
-    // Não expor detalhes de configuração ao cliente.
-    console.error("LOOPS_API_KEY is not set");
+  const supabase = createAdminClient();
+  if (!supabase) {
+    // Nao expor detalhes de configuracao ao cliente.
+    console.error("SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are not set");
     return NextResponse.json(
       { error: "Waitlist is temporarily unavailable." },
       { status: 503 },
     );
   }
 
-  const email = parsed.data.email.toLowerCase();
+  const { error } = await supabase.from("waitlist").insert({
+    email: parsed.data.email.toLowerCase(),
+    project: parsed.data.project ?? null,
+  });
 
-  try {
-    const res = await fetch(LOOPS_ENDPOINT, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        source: "landing-waitlist",
-        userGroup: "waitlist",
-        project: parsed.data.project ?? "",
-      }),
-    });
+  // Email repetido nao e erro para o utilizador — ja esta inscrito.
+  if (error?.code === UNIQUE_VIOLATION) {
+    return NextResponse.json({ success: true, alreadySubscribed: true });
+  }
 
-    const data = (await res.json().catch(() => null)) as {
-      success?: boolean;
-      message?: string;
-    } | null;
-
-    // Loops devolve 409 (ou success:false) quando o email já está na lista.
-    // Do ponto de vista do utilizador isso é sucesso — já está inscrito.
-    const alreadySubscribed =
-      res.status === 409 ||
-      (data?.message ?? "").toLowerCase().includes("already on list");
-
-    if (alreadySubscribed) {
-      return NextResponse.json({ success: true, alreadySubscribed: true });
-    }
-
-    if (!res.ok || data?.success === false) {
-      console.error("Loops error", res.status, data?.message);
-      return NextResponse.json(
-        { error: "Could not join the waitlist. Please try again." },
-        { status: 502 },
-      );
-    }
-
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Loops request failed", error);
+  if (error) {
+    console.error("Supabase insert failed", error.code, error.message);
     return NextResponse.json(
       { error: "Could not join the waitlist. Please try again." },
       { status: 502 },
     );
   }
+
+  return NextResponse.json({ success: true });
 }
