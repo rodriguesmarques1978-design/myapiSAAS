@@ -118,6 +118,12 @@ $$;
 --
 -- Sem isto haveria um buraco no arranque: a policy de insert em members exige
 -- ser admin da org, mas numa org acabada de criar ainda não há members nenhuns.
+--
+-- Cuidado: um `insert ... returning` em organizations falha com 42501. O
+-- Postgres aplica a policy de select à linha devolvida, e nesse instante o
+-- membership que este trigger cria ainda não é visível ao helper (que é
+-- stable, logo preso ao snapshot do statement). Inserir sem returning e ler a
+-- seguir num select separado funciona — é o que lib/auth/organizations.ts faz.
 -- ---------------------------------------------------------------------------
 
 create or replace function public.add_creator_as_owner()
