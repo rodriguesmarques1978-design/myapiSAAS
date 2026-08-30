@@ -1,23 +1,25 @@
 import Link from "next/link";
-import { ArrowRight, ArrowDown } from "lucide-react";
+import { ArrowRight, Check, X } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CodeBlock } from "@/components/ui/code-block";
 import { WaitlistButton } from "@/components/waitlist";
 
-const before = `# Your API today — open to anyone who finds the URL
-curl https://api.yourapp.com/v1/summarize \\
-  -d '{"text": "..."}'
+// A dor à esquerda, o alívio à direita. Mesma altura de leitura, tom oposto.
+const withoutMyapi = [
+  "Build API key management",
+  "Set up Redis rate limiting",
+  "Wire Stripe metering",
+  "Build usage dashboards",
+  "Weeks of work",
+];
 
-# No keys. No limits. No idea who is calling.`;
-
-const after = `# Behind myapi — keyed, limited, metered
-curl https://gw.myapi.dev/acme/v1/summarize \\
-  -H "Authorization: Bearer sk_live_8f2c…" \\
-  -d '{"text": "..."}'
-
-# 200 OK  ·  x-ratelimit-remaining: 4931`;
+const withMyapi = [
+  "One URL in front of your API",
+  "Keys, limits, billing included",
+  "Real-time analytics",
+  "Live in 5 minutes",
+];
 
 export function Hero() {
   return (
@@ -37,14 +39,13 @@ export function Hero() {
             Now in early access
           </Badge>
 
-          <h1 className="mx-auto max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-6xl">
-            Ship your API without building the boring parts
+          <h1 className="mx-auto max-w-3xl text-balance text-4xl font-bold tracking-tight sm:text-6xl">
+            Skip the boring parts of shipping an API
           </h1>
 
           <p className="mx-auto mt-5 max-w-2xl text-balance text-base text-muted-foreground sm:text-lg">
-            API keys, rate limiting, usage analytics, and metered billing — in
-            one drop-in gateway. Point it at your API and you&apos;re protected
-            in 5 minutes.
+            Keys, rate limits, and billing — without writing any of it. Point
+            myapi at your endpoint and ship in 5 minutes.
           </p>
 
           <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -62,18 +63,51 @@ export function Hero() {
               <Link href="#how-it-works">See how it works</Link>
             </Button>
           </div>
+
+          <p className="mt-4 text-xs text-muted-foreground">
+            Free tier at launch · No credit card
+          </p>
         </div>
 
-        {/* Antes → depois: a mesma chamada, com e sem gateway. */}
-        <div className="mt-16 grid items-center gap-4 lg:grid-cols-[1fr_auto_1fr]">
-          <CodeBlock code={before} lang="bash" filename="Without myapi" />
+        {/* Problema → solução, lado a lado. Empilha no mobile. */}
+        <div className="mx-auto mt-16 grid max-w-4xl gap-4 md:grid-cols-2">
+          <div className="rounded-xl border border-border/60 bg-muted/20 p-6">
+            <h2 className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <X className="h-4 w-4 text-red-500/70" />
+              Without myapi
+            </h2>
 
-          <div className="flex justify-center text-muted-foreground">
-            <ArrowRight className="hidden h-5 w-5 lg:block" />
-            <ArrowDown className="h-5 w-5 lg:hidden" />
+            <ul className="mt-5 space-y-3">
+              {withoutMyapi.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-start gap-2.5 font-mono text-[13px] leading-relaxed text-muted-foreground/70"
+                >
+                  <X className="mt-0.5 h-3.5 w-3.5 shrink-0 text-red-500/50" />
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <CodeBlock code={after} lang="bash" filename="With myapi" />
+          <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/[0.06] p-6 shadow-sm">
+            <h2 className="flex items-center gap-2 text-sm font-medium">
+              <Check className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              With myapi
+            </h2>
+
+            <ul className="mt-5 space-y-3">
+              {withMyapi.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-start gap-2.5 font-mono text-[13px] leading-relaxed text-foreground/90"
+                >
+                  <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </section>
