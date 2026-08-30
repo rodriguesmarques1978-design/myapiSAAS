@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { createAdminClient } from "@/lib/supabase";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { waitlistSchema } from "@/lib/validations";
 
 // Codigo do Postgres para violacao de unique constraint.
