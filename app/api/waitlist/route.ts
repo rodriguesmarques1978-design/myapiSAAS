@@ -25,7 +25,7 @@ export async function POST(request: Request) {
   const supabase = createAdminClient();
   if (!supabase) {
     // Nao expor detalhes de configuracao ao cliente.
-    console.error("SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are not set");
+    console.error("NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are not set");
     return NextResponse.json(
       { error: "Waitlist is temporarily unavailable." },
       { status: 503 },
