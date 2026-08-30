@@ -17,6 +17,8 @@ create table if not exists public.organizations (
   created_at timestamptz not null default now()
 );
 
+alter table public.organizations enable row level security;
+
 create table if not exists public.members (
   id uuid primary key default gen_random_uuid(),
   org_id uuid not null references public.organizations (id) on delete cascade,
@@ -28,6 +30,8 @@ create table if not exists public.members (
   unique (org_id, user_id)
 );
 
+alter table public.members enable row level security;
+
 create table if not exists public.projects (
   id uuid primary key default gen_random_uuid(),
   org_id uuid not null references public.organizations (id) on delete cascade,
@@ -38,6 +42,8 @@ create table if not exists public.projects (
   slug text not null unique,
   created_at timestamptz not null default now()
 );
+
+alter table public.projects enable row level security;
 
 create table if not exists public.api_keys (
   id uuid primary key default gen_random_uuid(),
@@ -53,6 +59,8 @@ create table if not exists public.api_keys (
   revoked_at timestamptz,
   created_at timestamptz not null default now()
 );
+
+alter table public.api_keys enable row level security;
 
 -- ---------------------------------------------------------------------------
 -- Índices
@@ -142,12 +150,11 @@ create trigger organizations_add_creator_as_owner
 --
 -- A service role key ignora tudo isto. É por isso que o gateway (que precisa
 -- de validar keys de qualquer projeto) corre server-side com essa chave.
+--
+-- O RLS é ligado logo a seguir a cada create table, de propósito: se este
+-- script falhasse a meio, nenhuma tabela ficaria criada sem RLS ativo.
 -- ---------------------------------------------------------------------------
 
-alter table public.organizations enable row level security;
-alter table public.members enable row level security;
-alter table public.projects enable row level security;
-alter table public.api_keys enable row level security;
 
 -- organizations ------------------------------------------------------------
 
