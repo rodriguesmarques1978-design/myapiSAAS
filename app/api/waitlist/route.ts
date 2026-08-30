@@ -35,6 +35,7 @@ export async function POST(request: Request) {
   const { error } = await supabase.from("waitlist").insert({
     email: parsed.data.email.toLowerCase(),
     project: parsed.data.project ?? null,
+    stack: parsed.data.stack ?? null,
   });
 
   // Email repetido nao e erro para o utilizador — ja esta inscrito.
