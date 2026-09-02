@@ -1,5 +1,12 @@
 # myapi
 
+> **⏸️ PROJETO PAUSADO — 2 de setembro de 2026**
+>
+> O desenvolvimento está parado por tempo indeterminado: o nicho de API gateway
+> está saturado e o esforço passou para outro nicho. Nada foi apagado e o
+> projeto é retomável. Ver [PAUSED.md](PAUSED.md) para o estado completo, o que
+> ficou pendente e como retomar.
+
 API infrastructure for indie developers — rate limits, API keys, and metered
 billing in 5 minutes.
 
